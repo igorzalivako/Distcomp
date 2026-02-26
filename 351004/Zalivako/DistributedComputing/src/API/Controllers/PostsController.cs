@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Requests;
 using Application.DTOs.Responses;
-using Application.Exceptions;
+using Application.Exceptions.Application;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +36,15 @@ namespace API.Controllers
                     new { id = createdPost.Id },
                     createdPost
                 );
+            }
+            catch (PostAlreadyExistsException ex)
+            {
+                _logger.LogError(ex, "Post already exists");
+                return StatusCode(403);
+            }
+            catch (ReferenceException)
+            {
+                return StatusCode(404);
             }
             catch (Exception ex)
             {
